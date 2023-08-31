@@ -1,0 +1,28 @@
+﻿<Page x:Class="LR_1.Views.AlphabeticCodingPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:LR_1.ViewModels"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800">
+    <Page.DataContext>
+        <local:AlphabeticCodingVIewModel/>
+    </Page.DataContext>
+    
+    <Grid>
+        <StackPanel>
+            <TextBlock Text="Лабораторная работа 1 Побуквенное кодирование" FontWeight="Bold" FontSize="18"/>
+            <TextBlock Text="Сообщение" FontSize="14"/>
+            <TextBox x:Name="MessageText"  Text="{Binding MessageText}" Height="30" VerticalAlignment="Top" FontSize="14"/>
+            <TextBlock Text="Закодированное сообщение" FontSize="14"/>
+            <TextBox x:Name="EncodeText"  Text="{Binding EncodeText}" Height="30" VerticalAlignment="Top" FontSize="14"/>
+            <TextBlock Text="Оптимальность" FontSize="14"/>
+            <TextBox x:Name="CodeIsOptimalText"  Text="{Binding CodeIsOptimal}" Height="30" VerticalAlignment="Top" FontSize="14"/>
+            <TextBlock Text="Относительная избыточность кода" FontSize="14"/>
+            <TextBox x:Name="RedundancyText"  Text="{Binding Redundancy}" Height="30" VerticalAlignment="Top" FontSize="14"/>
+            <Button x:Name="EncodeMessageBtn" Command="{Binding HilbertMooreEncodeCommand}" Height="30" Content="Кодировать"/>
+            <DataGrid ItemsSource="{Binding MooreFields}"/>
+        </StackPanel>
+    </Grid>
+</Page>
