@@ -1,0 +1,31 @@
+﻿<Page x:Class="LR_1.Views.HammingCodePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:vm="clr-namespace:LR_1.ViewModels"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="HammingCodePage">
+    <Page.DataContext>
+        <vm:HammingCodeViewModel/>
+    </Page.DataContext>
+
+    <Grid>
+        <StackPanel>
+            <TextBlock Text="Лабораторная работа 2 Код Хэмминга, матричный способ кодирования" FontWeight="Bold" FontSize="18"/>
+            <TextBlock Text="Сообщение" FontSize="14"/>
+            <TextBox x:Name="MessageText"  Text="{Binding MessageText}" Height="30" VerticalAlignment="Top" FontSize="14"/>
+            <Button x:Name="EncodeMessageBtn" Command="{Binding EncodeTextCommand}" Height="30" Content="Кодировать"/>
+            <TextBlock Text="Закодированное сообщение" FontSize="14"/>
+            <TextBox x:Name="EncodeText"  Text="{Binding EncodeText}" Height="30" VerticalAlignment="Top" FontSize="14"/>
+            <Button x:Name="DecodeMessageBtn" Command="{Binding HilbertMooreEncodeCommand}" Height="30" Content="Декодировать"/>
+            <TextBlock Text="Декодированное сообщение" FontSize="14"/>
+            <TextBox x:Name="DecodedText"  Text="{Binding DecodeText}" Height="30" VerticalAlignment="Top" FontSize="14"/>
+            <TextBlock Text="Граница Варшамова-Гильберта" FontSize="14"/>
+            <TextBox x:Name="RedundancyText"  Text="{Binding Redundancy}" Height="30" VerticalAlignment="Top" FontSize="14"/>
+            
+            <DataGrid ItemsSource="{Binding MooreFields}"/>
+        </StackPanel>
+    </Grid>
+</Page>

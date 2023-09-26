@@ -59,7 +59,6 @@ namespace LR_1.ViewModels
 
         public AlphabeticCodingVIewModel()
         {
-            //CheckKraftInequalityCommand = ReactiveCommand.Create(CheckKraftInequality);
             HilbertMooreEncodeCommand = ReactiveCommand.Create(HilbertMooreEncode);
             MooreFields = new ObservableCollection<HilbertMooreField>();
         }

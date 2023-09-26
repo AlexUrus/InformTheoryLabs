@@ -19,6 +19,7 @@ namespace LR_1.ViewModels
     {
         #region Pages
         private Page AlphabeticCodingPage;
+        private Page HammingCodePage;
         #endregion
 
         #region Properties
@@ -31,19 +32,31 @@ namespace LR_1.ViewModels
         #endregion
 
         #region Commands
-        public ReactiveCommand<Unit, Unit> NavigateToAlphCodingPageCommand { get; }
+        public ReactiveCommand<string, Unit> NavigateToCommand { get; }
         #endregion
 
         public MainViewModel() 
         {
             AlphabeticCodingPage = new AlphabeticCodingPage();
+            HammingCodePage = new HammingCodePage();
             CurrentPage = AlphabeticCodingPage;
-            NavigateToAlphCodingPageCommand = NavigateToAlphCodingPageCommand = ReactiveCommand.CreateFromObservable(NavigateToAlphCoding);
+            NavigateToCommand = ReactiveCommand.CreateFromObservable<string, Unit>(NavigateTo);
         }
 
-        public IObservable<Unit> NavigateToAlphCoding()
+        public IObservable<Unit> NavigateTo(string page)
         {
-            CurrentPage = AlphabeticCodingPage;
+            switch (page)
+            {
+                case "AplhabeticCodingPage":
+                    CurrentPage = AlphabeticCodingPage;
+                    break;
+                case "HammingCodePage":
+                    CurrentPage = HammingCodePage;
+                    break;
+                default:
+                    break;
+            }
+            
             return Observable.Return(Unit.Default);
         }
     }
