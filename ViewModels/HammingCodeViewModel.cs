@@ -19,6 +19,22 @@ namespace LR_1.ViewModels
             set => this.RaiseAndSetIfChanged(ref _encodeText, value);
         }
 
+        int[,] H = new int[3, 7]
+        {
+            { 1, 1, 0, 1, 1, 0, 0},
+            { 1, 1, 1, 0, 0, 1, 0},
+            { 1, 1, 0, 1, 0, 0, 1}
+        };
+
+
+        int[,] G = new int[4, 7]
+        {
+            { 1, 0, 0, 0, 1, 1, 1},
+            { 0, 1, 0, 0, 1, 1, 0},
+            { 0, 0, 1, 0, 0, 1, 1},
+            { 0, 0, 0, 1, 1, 0, 1}
+        };
+
         private string _messageText;
         public string MessageText
         {
@@ -52,7 +68,7 @@ namespace LR_1.ViewModels
         {
             if(MessageText != null && MessageText != string.Empty) 
             {
-                EncodeText = ConvertToUnicode(MessageText);
+                EncodeText = ApplyExtendedHammingCode(MessageText);
             }
         }
 
@@ -67,27 +83,81 @@ namespace LR_1.ViewModels
             return binaryStringBuilder.ToString();
         }
 
-        private static string SimplifyEncoding(string kod2, List<YourCollectionType> collection2)
+        private string ApplyExtendedHammingCode(string input)
         {
-            StringBuilder kod3 = new StringBuilder();
+            StringBuilder encodedString = new StringBuilder();
 
-            for (int i = 0; i < kod2.Length; i += 4)
+            // Пройдемся по каждому символу входной строки
+            foreach (char c in input)
             {
-                foreach (var collectionItem in collection2)
-                {
-                    int result = 0;
-                    for (int j = 0; j < 4; j++)
-                    {
-                        int kod2Bit = Convert.ToInt32(kod2[i + j]);
-                        int collectionBit = Convert.ToInt32(collectionItem.First[j]);
+                // Конвертируем символ в его двоичное представление и добавляем нули слева до 16 бит
+                string binaryChar = Convert.ToString(c, 2).PadLeft(16, '0');
 
-                        result += (kod2Bit & collectionBit);
+                // Пройдемся по каждым 4 битам и применим расширенный код Хемминга
+                for (int i = 0; i < 16; i += 4)
+                {
+                    StringBuilder encodedGroup = new StringBuilder();
+                    for (int j = 0; j < 3; j++)
+                    {
+                        int sum = 0;
+                        for (int k = 0; k < 7; k++)
+                        {
+                            int bit = (binaryChar[i + k] - '0') & G[j, k];
+                            sum += bit;
+                        }
+                        encodedGroup.Append((sum % 2).ToString());
                     }
-                    kod3.Append(result % 2);
+                    encodedString.Append(encodedGroup.ToString());
                 }
             }
 
-            return kod3.ToString();
+            return encodedString.ToString();
+        }
+
+        private string DecodeHammingCode(string input, int[,] hammingMatrix)
+        {
+            StringBuilder decodedString = new StringBuilder();
+            for (int i = 0; i < input.Length; i += 8)
+            {
+                int[] syndrome = new int[3];
+                int[] receivedData = new int[7];
+
+                // Заполняем массив приемных данных и вычисляем синдромы.
+                for (int j = 0; j < 7; j++)
+                {
+                    receivedData[j] = input[i + j + 1] - '0';
+                    for (int k = 0; k < 3; k++)
+                    {
+                        syndrome[k] += receivedData[j] & hammingMatrix[k, j];
+                    }
+                }
+
+                // Проверяем синдромы.
+                bool hasError = false;
+                for (int j = 0; j < 3; j++)
+                {
+                    syndrome[j] %= 2;
+                    if (syndrome[j] != 0)
+                    {
+                        hasError = true;
+                        break;
+                    }
+                }
+
+                // Если есть ошибка, пытаемся исправить ее.
+                if (hasError)
+                {
+                    int errorBit = syndrome[0] * 1 + syndrome[1] * 2 + syndrome[2] * 4;
+                    receivedData[errorBit - 1] ^= 1; // Инвертируем бит с ошибкой.
+                }
+
+                // Добавляем биты данных к результату.
+                for (int j = 0; j < 7; j++)
+                {
+                    decodedString.Append(receivedData[j]);
+                }
+            }
+            return decodedString.ToString();
         }
     }
 }
