@@ -12,8 +12,19 @@
     </Page.DataContext>
 
     <Grid>
-        <StackPanel>
+        <StackPanel Grid.ColumnSpan="2">
             <TextBlock Text="Лабораторная работа 2 Код Хэмминга, матричный способ кодирования" FontWeight="Bold" FontSize="18"/>
+            <WrapPanel>
+                <StackPanel Grid.Column="0" HorizontalAlignment="Left">
+                    <TextBlock Text="G" FontSize="14" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding G_MatrixString}" FontSize="14"/>
+                </StackPanel>
+                <Separator Width="10" Opacity="0"/>
+                <StackPanel Grid.Column="0" HorizontalAlignment="Left">
+                    <TextBlock Text="H" FontSize="14" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding H_MatrixString}" FontSize="14"/>
+                </StackPanel>
+            </WrapPanel>
             <TextBlock Text="Сообщение" FontSize="14"/>
             <TextBox x:Name="MessageText"  Text="{Binding MessageText}" Height="30" VerticalAlignment="Top" FontSize="14"/>
             <Button x:Name="EncodeMessageBtn" Command="{Binding EncodeTextCommand}" Height="30" Content="Кодировать"/>
@@ -25,7 +36,8 @@
             <TextBlock Text="Граница Варшамова-Гильберта" FontSize="14"/>
             <TextBox x:Name="RedundancyText"  Text="{Binding Redundancy}" Height="30" VerticalAlignment="Top" FontSize="14"/>
             
-            <DataGrid ItemsSource="{Binding MooreFields}"/>
+            
+
         </StackPanel>
     </Grid>
 </Page>
