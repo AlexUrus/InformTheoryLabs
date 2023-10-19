@@ -29,5 +29,23 @@ namespace LR_1.ViewModels
             get => _errorType; 
             set => this.RaiseAndSetIfChanged(ref _errorType, value);
         }
+
+        public override string ToString()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append("CorrectConstr: ");
+            foreach (var item in _correctConstruction)
+            {
+                stringBuilder.Append(item.ToString() + " ");
+            }
+            stringBuilder.Append(";");
+            stringBuilder.Append("ErrorType: ");
+            foreach (var item in _errorType)
+            {
+                stringBuilder.Append(item.ToString() + " ");
+            }
+
+            return stringBuilder.ToString();
+        }
     }
 }

@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace LR_1.Models
 {
@@ -12,12 +13,11 @@ namespace LR_1.Models
     {
         private MatrixManager matrixManager;
 
-        public byte[,] H_Matrix = new byte[4, 8]
+        public byte[,] H_Matrix = new byte[3, 7]
         {
-            { 1, 1, 1, 1, 1, 1, 1, 1},
-            { 0, 1, 1, 0, 1, 1, 0, 0},
-            { 0, 1, 1, 1, 0, 0, 1, 0},
-            { 0, 1, 1, 0, 1, 0, 0, 1}
+            { 1, 1, 0, 1, 1, 0, 0},
+            { 1, 1, 1, 0, 0, 1, 0},
+            { 1, 1, 0, 1, 0, 0, 1}
         };
 
         public byte[,] G_Matrix = new byte[4, 7]
@@ -57,7 +57,7 @@ namespace LR_1.Models
 
         public string GetDecodedText(string encodedText)
         {
-            List<byte[]> arrConstructions = ConvertMatrixToListOfByteArray(H_Matrix);
+            List<byte[]> arrConstructions = ConvertEncodedTextToListConstructions(encodedText);
 
             var slist = GetSyndromeList(arrConstructions);
             foreach (var arr in slist)
@@ -71,6 +71,56 @@ namespace LR_1.Models
             }
 
             return "gg";
+        }
+
+        private byte[,] MultiplyMatrices(byte[,] matrixA, byte[,] matrixB)
+        {
+            int rowsA = matrixA.GetLength(0);
+            int columnsA = matrixA.GetLength(1);
+            int rowsB = matrixB.GetLength(0);
+            int columnsB = matrixB.GetLength(1);
+
+            if (columnsA != rowsB)
+            {
+                throw new ArgumentException("Невозможно умножить матрицы. Количество столбцов в первой матрице должно быть равно количеству строк во второй матрице.");
+            }
+
+            byte[,] resultMatrix = new byte[rowsA, columnsB];
+
+            for (int i = 0; i < rowsA; i++)
+            {
+                for (int j = 0; j < columnsB; j++)
+                {
+                    byte sum = 0;
+                    for (int k = 0; k < columnsA; k++)
+                    {
+                        sum += (byte)(matrixA[i, k] * matrixB[k, j]);
+                    }
+                    resultMatrix[i, j] = sum;
+                }
+            }
+
+            return resultMatrix;
+        }
+
+        private List<byte[]> ConvertEncodedTextToListConstructions(string encodedText)
+        {
+            List<byte[]> listBytes = new List<byte[]>();
+
+            for (int i = 0; i < encodedText.Length; i += 8)
+            {
+                string subString = encodedText.Substring(i, 8);
+                byte[] subArray = new byte[8];
+
+                for (int j = 0; j < subString.Length; j++)
+                {
+                    subArray[j] = Convert.ToByte(subString[j].ToString());
+                }
+
+                listBytes.Add(subArray);
+            }
+
+            return listBytes;
         }
 
         private List<byte[]> ConvertMatrixToListOfByteArray(byte[,] matrix)
@@ -158,9 +208,16 @@ namespace LR_1.Models
             var rows = extendedMatrix.GetLength(0);
             var columns = extendedMatrix.GetLength(1);
             var codeconstr = new byte[rows];
+
             for (var row = 0; row < rows; row++)
             {
-                var xor = u.Select((t, bit) => t * extendedMatrix[row, bit]).Sum();
+                var xor = 0;
+
+                for (var bit = 0; bit < columns; bit++)
+                {
+                    xor += u[bit] * extendedMatrix[row, bit];
+                }
+
                 codeconstr[row] = (byte)(xor % 2);
             }
 
@@ -172,7 +229,7 @@ namespace LR_1.Models
             var result = new List<byte[]>();
             foreach (var construction in constructions)
             {
-                result.Add(SyndromeOf(construction, G_Matrix));
+                result.Add(SyndromeOf(construction, H_Matrix));
             }
 
             return result;
