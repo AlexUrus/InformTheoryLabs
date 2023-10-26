@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:vm="clr-namespace:LR_1.ViewModels"
       mc:Ignorable="d" d:DesignWidth="800"
+      xmlns:views="clr-namespace:LR_1.Views"
       Title="HammingCodePage" Height="570">
     <Page.DataContext>
         <vm:HammingCodeViewModel/>
@@ -31,7 +32,7 @@
             <TextBox x:Name="EncodeText"  Text="{Binding EncodeText}" Height="30" VerticalAlignment="Top" FontSize="14"/>
             <Button x:Name="DecodeMessageBtn" Command="{Binding DecodeTextCommand}" Height="30" Content="Декодировать"/>
             <TextBlock Text="Декодированное сообщение" FontSize="14"/>
-            <TextBox x:Name="DecodedText"  Text="{Binding DecodeText}" Height="30" VerticalAlignment="Top" FontSize="14"/>
+            <TextBox x:Name="DecodedText"  Text="{Binding DecodeText}" Height="30" VerticalAlignment="Top" FontSize="14" />
 
         </StackPanel>
         <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="1">
@@ -48,15 +49,7 @@
             </WrapPanel>
         </StackPanel>
         <Grid Grid.Row="2" Grid.ColumnSpan="2">
-            <DataGrid>
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Полученая кодовая комбинация" Width="Auto"/>
-                    <DataGridTextColumn Header="S доп" Width="Auto"/>
-                    <DataGridTextColumn Header="Синдром" Width="Auto"/>
-                    <DataGridTextColumn Header="Тип ошибки" Width="Auto"/>
-                    <DataGridTextColumn Header="Исправление ошибки" Width="Auto"/>
-                </DataGrid.Columns>
-            </DataGrid>
+            <views:CorrectorView/>
         </Grid>
     </Grid>
 </Page>

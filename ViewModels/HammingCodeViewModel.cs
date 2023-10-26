@@ -48,7 +48,21 @@ namespace LR_1.ViewModels
                 return ConvertMatrixtoString(_model.H_Matrix);
             }
         }
-        
+
+        private ObservableCollection<SyndromeViewModel> _syndromeCollection;
+        public ObservableCollection<SyndromeViewModel> SyndromeCollection
+        {
+            get => _syndromeCollection;
+            set => this.RaiseAndSetIfChanged(ref _syndromeCollection, value);
+        }
+
+        private ObservableCollection<CorrectionViewModel> _corrections;
+        public ObservableCollection<CorrectionViewModel> Corrections
+        {
+            get => _corrections;
+            set => this.RaiseAndSetIfChanged(ref _corrections, value);
+        }
+
         public ReactiveCommand<Unit,Unit> EncodeTextCommand { get; }
         public ReactiveCommand<Unit, Unit> DecodeTextCommand { get; }
 
@@ -70,7 +84,7 @@ namespace LR_1.ViewModels
         {
             if(MessageText != null && MessageText != string.Empty) 
             {
-                int[] encodedBits = _model.GetEncodedMas(MessageText) ;
+                byte[][] encodedBits = _model.GetEncodedMas(MessageText);
                 EncodeText = ConvertMasIntToStringBytes(encodedBits);
             }
         }
@@ -81,6 +95,8 @@ namespace LR_1.ViewModels
             {
                 DecodeText = _model.GetDecodedText(EncodeText); 
             }
+            Corrections = _model.Corrections;
+            SyndromeCollection = _model.SyndromeCollection;
         }
 
         private string ConvertMatrixtoString(byte[,] matrix)
@@ -97,12 +113,15 @@ namespace LR_1.ViewModels
             return sb.ToString();
         }
 
-        private string ConvertMasIntToStringBytes(int[] masBits)
+        private string ConvertMasIntToStringBytes(byte[][] masBits)
         {
             StringBuilder sb = new StringBuilder();
-            foreach (int bits in masBits)
+            foreach (byte[] block in masBits)
             {
-                sb.Append(Convert.ToString(bits, 2).PadLeft(8, '0'));
+                foreach (byte bit in block)
+                {
+                    sb.Append(Convert.ToString(bit, 2));
+                }
             }
             return sb.ToString();
         }

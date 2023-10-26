@@ -10,21 +10,21 @@ namespace LR_1.ViewModels
 {
     public class CorrectionViewModel : BaseViewModel
     {
-        public CorrectionViewModel(byte[] errorType, byte[] correction)
+        public CorrectionViewModel(string errorType, string correction)
         {
             ErrorType = errorType;
             CorrectConstruction = correction;
         }
 
-        private byte[] _correctConstruction;
-        public byte[] CorrectConstruction
+        private string _correctConstruction;
+        public string CorrectConstruction
         {
             get => _correctConstruction; 
-            set => this.RaiseAndSetIfChanged(ref _correctConstruction, value);
+            set => this.RaiseAndSetIfChanged(backingField: ref _correctConstruction, value);
         }
 
-        private byte[] _errorType;
-        public byte[] ErrorType
+        private string _errorType;
+        public string ErrorType
         {
             get => _errorType; 
             set => this.RaiseAndSetIfChanged(ref _errorType, value);

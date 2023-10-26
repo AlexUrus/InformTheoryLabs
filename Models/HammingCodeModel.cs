@@ -11,96 +11,120 @@ namespace LR_1.Models
 {
     public class HammingCodeModel
     {
-        private MatrixManager matrixManager;
+        public byte[,] H_Matrix = MatrixManager.HammingCodesMatrixWithParity;
 
-        public byte[,] H_Matrix = new byte[3, 7]
-        {
-            { 1, 1, 0, 1, 1, 0, 0},
-            { 1, 1, 1, 0, 0, 1, 0},
-            { 1, 1, 0, 1, 0, 0, 1}
-        };
+        public byte[,] G_Matrix = MatrixManager.GeneratingMatrix;
 
-        public byte[,] G_Matrix = new byte[4, 7]
-        {
-            { 1, 0, 0, 0, 1, 1, 1},
-            { 0, 1, 0, 0, 1, 1, 0},
-            { 0, 0, 1, 0, 0, 1, 1},
-            { 0, 0, 0, 1, 1, 0, 1}
-        };
-        int[] G = { 8, 4, 2, 1, 13, 14, 11 };
-
-        public List<SyndromeViewModel> SyndromeCollection;
-        public List<CorrectionViewModel> Corrections;
+        public ObservableCollection<SyndromeViewModel> SyndromeCollection;
+        public ObservableCollection<CorrectionViewModel> Corrections;
+        private HammingRepairTools _repairTools;
         public HammingCodeModel()
         {
-            matrixManager = new MatrixManager();
-            SyndromeCollection = new List<SyndromeViewModel>();
-            Corrections = new List<CorrectionViewModel>();
+            SyndromeCollection = new ObservableCollection<SyndromeViewModel>();
+            Corrections = new ObservableCollection<CorrectionViewModel>();
         }
 
-        public int[] GetEncodedMas(string text)
+        public byte[][] GetEncodedMas(string text)
         {
             string strBits = ConvertToUnicode(text);
-            int[] masBits = DivStrBy4bit(strBits);
-            int[] checkedmasBits = GenerateBits(masBits);
-            int[] parityBit = ParityBit(masBits, checkedmasBits);
+            string[] blocks = DivStrBy4bit(strBits);
+            int blockLength = blocks[0].Length;
+            var codematrix = new byte[blocks.Length][];
 
-            int[] fullCode = new int[masBits.Length];
-
-            for (int i = 0; i < fullCode.Length; i++)
+            for (var i = 0; i < blocks.Length; i++)
             {
-                fullCode[i] += (masBits[i] << 4) + (checkedmasBits[i] << 1) + (parityBit[i]);
+                codematrix[i] = new byte[8];
             }
 
-            return fullCode;
+            for (var block = 0; block < blocks.Length; block++)
+            {
+                var bitblock = new byte[blockLength];
+                for (var bit = 0; bit < blockLength; bit++)
+                {
+                    var b = blocks[block];
+                    bitblock[bit] = (byte)char.GetNumericValue(b[bit]);
+                }
+
+                var vector = MultiplyVectorByGMatrix(bitblock, G_Matrix);
+
+                for (var i = 0; i < vector.Length; i++)
+                {
+                    codematrix[block][i] = vector[i];
+                }
+            }
+
+            return codematrix;
         }
 
         public string GetDecodedText(string encodedText)
         {
+            SyndromeCollection.Clear();
+            Corrections.Clear();
+
+            _repairTools = new HammingRepairTools(MatrixManager.HammingCodesMatrixWithoutParity);
+
             List<byte[]> arrConstructions = ConvertEncodedTextToListConstructions(encodedText);
 
-            var slist = GetSyndromeList(arrConstructions);
+            var slist = _repairTools.GetSyndromeList(arrConstructions);
             foreach (var arr in slist)
             {
                 SyndromeCollection.Add(new SyndromeViewModel(arr));
             }
-            var arrcorrections = GetRepairedConstructions(arrConstructions, slist);
+            var arrcorrections = _repairTools.GetRepairedConstructions(arrConstructions, slist);
             for (var i = 0; i < arrcorrections.Count; i++)
             {
-                Corrections.Add(new CorrectionViewModel(slist[i], arrcorrections[i]));
+                Corrections.Add(new CorrectionViewModel(ConvertArrayToString(slist[i]), ConvertArrayToString(arrcorrections[i])));
             }
 
-            return "gg";
+            return DecodeText(arrcorrections);
         }
 
-        private byte[,] MultiplyMatrices(byte[,] matrixA, byte[,] matrixB)
+        public string DecodeText(List<byte[]> arrcorrections)
         {
-            int rowsA = matrixA.GetLength(0);
-            int columnsA = matrixA.GetLength(1);
-            int rowsB = matrixB.GetLength(0);
-            int columnsB = matrixB.GetLength(1);
-
-            if (columnsA != rowsB)
+            List<byte[]> infBits = new List<byte[]>();
+            foreach (var arr in arrcorrections)
             {
-                throw new ArgumentException("Невозможно умножить матрицы. Количество столбцов в первой матрице должно быть равно количеству строк во второй матрице.");
+                byte[] infbit = { arr[1], arr[2], arr[3], arr[4]}; 
+                infBits.Add(infbit);
             }
 
-            byte[,] resultMatrix = new byte[rowsA, columnsB];
+            var sb = new StringBuilder();
 
-            for (int i = 0; i < rowsA; i++)
+            foreach (var item in infBits)
             {
-                for (int j = 0; j < columnsB; j++)
+                foreach (var bit in item)
                 {
-                    byte sum = 0;
-                    for (int k = 0; k < columnsA; k++)
-                    {
-                        sum += (byte)(matrixA[i, k] * matrixB[k, j]);
-                    }
-                    resultMatrix[i, j] = sum;
+                    sb.Append(bit);
                 }
             }
+            return DecodeBinaryToUnicode(sb.ToString());   
 
-            return resultMatrix;
+        }
+
+        static string DecodeBinaryToUnicode(string binaryStr)
+        {
+            var sb = new StringBuilder();
+
+            binaryStr = binaryStr.Trim();
+
+            for (int i = 0; i < binaryStr.Length; i += 16) 
+            {
+                string byteStr = binaryStr.Substring(i, 16);
+                int codepoint = Convert.ToInt32(byteStr, 2);
+                sb.Append(char.ConvertFromUtf32(codepoint));
+            }
+
+            return sb.ToString();
+        }
+
+        private string ConvertArrayToString(byte[] arr)
+        {
+            var sb = new StringBuilder();
+            foreach (var item in arr)
+            {
+                sb.Append(item);
+            }
+            return sb.ToString();
         }
 
         private List<byte[]> ConvertEncodedTextToListConstructions(string encodedText)
@@ -123,25 +147,6 @@ namespace LR_1.Models
             return listBytes;
         }
 
-        private List<byte[]> ConvertMatrixToListOfByteArray(byte[,] matrix)
-        {
-            List<byte[]> listBytes = new List<byte[]>();
-
-            for (int i = 0; i < matrix.GetLength(0); i++)
-            {
-                byte[] rowBytes = new byte[matrix.GetLength(1)];
-
-                for (int j = 0; j < matrix.GetLength(1); j++)
-                {
-                    rowBytes[j] = matrix[i, j];
-                }
-
-                listBytes.Add(rowBytes);
-            }
-
-            return listBytes; 
-        }
-
         public string ConvertToUnicode(string str)
         {
             StringBuilder binaryStringBuilder = new StringBuilder();
@@ -153,165 +158,33 @@ namespace LR_1.Models
             return binaryStringBuilder.ToString();
         }
 
-        private int[] DivStrBy4bit(string strBits)
+        private string[] DivStrBy4bit(string strBits)
         {
-            int[] masBits = new int[(strBits.Length + 3) / 4];
+            string[] masBits = new string[(strBits.Length + 3) / 4];
             for (int i = 0; i < strBits.Length; i += 4)
             {
                 string subStr = strBits.Substring(i, Math.Min(4, strBits.Length - i));
-                masBits[i / 4] = Convert.ToInt32(subStr, 2);
+                masBits[i / 4] = subStr;
             }
+
             return masBits;
         }
 
-        private static int SumXor(int x, int gMatrix)
+        private byte[] MultiplyVectorByGMatrix(byte[] bitblock, byte[,] gmatrix)
         {
-            int m = 0b1000;
-            int result = 0;
-            for (int i = 3; i >= 0; i--)
+            var gColumns = gmatrix.GetLength(1);
+            var codeconstr = new byte[gColumns + 1];
+            for (var column = 0; column < gColumns; column++)//columns G (7)
             {
-                result ^= (x & gMatrix & (m >> (3 - i))) >> i;
+                var xor = bitblock.Select((t, bit) => t * gmatrix[bit, column]).Sum();
+                codeconstr[column + 1] = (byte)(xor % 2);
             }
-            return result;
-        }
-
-        public int[] GenerateBits(int[] informativeBits)
-        {
-            int[] checkBits = new int[informativeBits.Length];
-
-            for (int i = 0; i < checkBits.Length; i++)
-            {
-                checkBits[i] = (SumXor(informativeBits[i], G[4]) << 2) + (SumXor(informativeBits[i], G[5]) << 1) + SumXor(informativeBits[i], G[6]);
-            }
-
-            return checkBits;
-        }
-
-        public int[] ParityBit(int[] infBits, int[] checkBits)
-        {
-            int[] parityBit = new int[checkBits.Length];
-
-            for (int i = 0; i < parityBit.Length; i++)
-            {
-                for (int j = 0; j < 4; j++)
-                    parityBit[i] ^= (infBits[i] & (1 << j)) >> j;
-
-                for (int j = 0; j < 3; j++)
-                    parityBit[i] ^= (checkBits[i] & (1 << j)) >> j;
-            }
-
-            return parityBit;
-        }
-
-        private byte[] SyndromeOf(byte[] u, byte[,] extendedMatrix)
-        {
-            var rows = extendedMatrix.GetLength(0);
-            var columns = extendedMatrix.GetLength(1);
-            var codeconstr = new byte[rows];
-
-            for (var row = 0; row < rows; row++)
-            {
-                var xor = 0;
-
-                for (var bit = 0; bit < columns; bit++)
-                {
-                    xor += u[bit] * extendedMatrix[row, bit];
-                }
-
-                codeconstr[row] = (byte)(xor % 2);
-            }
-
+            //xor all bits
+            var allxor = codeconstr.Aggregate(0, (current, b) => current ^ b);
+            codeconstr[0] = (byte)allxor;
             return codeconstr;
         }
 
-        public List<byte[]> GetSyndromeList(IList<byte[]> constructions)
-        {
-            var result = new List<byte[]>();
-            foreach (var construction in constructions)
-            {
-                result.Add(SyndromeOf(construction, H_Matrix));
-            }
-
-            return result;
-        }
-
-        public List<byte[]> GetRepairedConstructions(IList<byte[]> constructions, IList<byte[]> syndromes)
-        {
-            if (constructions.Count != syndromes.Count)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-
-            var repairedConstructions = new List<byte[]>();
-
-            var constructionsAndSyndromes = constructions.Zip(syndromes, (c, s) => new { Construction = c, Syndrome = s });
-
-            foreach (var cs in constructionsAndSyndromes)
-            {
-                if (CheckSyndromeForError(cs.Syndrome))
-                {
-                    var errorBit = FindErrorBitNumber(cs.Syndrome);
-                    if (errorBit == -1)
-                    {
-                        repairedConstructions.Add(cs.Construction);
-                    }
-                    else
-                    {
-                        var _ = cs.Construction[errorBit] == 0 ? 1 : 0;
-                        cs.Construction[errorBit] = (byte)_;
-                        repairedConstructions.Add(cs.Construction);
-                    }
-                }
-                else
-                {
-                    repairedConstructions.Add(cs.Construction);
-                }
-
-            }
-
-            return repairedConstructions;
-        }
-
-        /// <summary>
-        /// Проверяет код на ошибки по синдрому: true, если есть ошибки
-        /// </summary>
-        /// <param name="optionalSyndrome">S доп.+ синдром из 3 бит</param>
-        /// <returns>True - есть ошибки</returns>
-        private bool CheckSyndromeForError(byte[] optionalSyndrome)
-        {
-            if (optionalSyndrome.All(b => b == 0))
-            {
-                return false;
-            }
-            else if (optionalSyndrome.First() == 1)
-            {
-                return true;
-            }
-
-            return false;//четное число ошибок
-        }
-
-        private int FindErrorBitNumber(byte[] optionalSyndrome)
-        {
-            var num = -1;
-
-            var bitcolumn = new byte[optionalSyndrome.Length];
-
-            for (var col = 0; col < G_Matrix.GetLength(1); col++)
-            {
-                for (var row = 0; row < G_Matrix.GetLength(0); row++)
-                {
-                    bitcolumn[row] = G_Matrix[row, col];
-                }
-
-                if (!optionalSyndrome.SequenceEqual(bitcolumn)) continue;
-                num = col;
-                break;
-            }
-
-            return num;
-
-        }
-
+        
     }
 }

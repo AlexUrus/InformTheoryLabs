@@ -16,21 +16,13 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <TextBlock Text="Кодовые конструкции" />
-            <DataGrid ItemsSource="{Binding HCodesCollection}" Margin="0,32,0,0" MaxHeight="200" HeadersVisibility="None" Grid.Row="1" VerticalAlignment="Top"/>
-        </Grid>
         <Grid Grid.Row="0" Grid.Column="1" Margin="10,0,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <TextBlock Text="Синдромы" />
-            <DataGrid Grid.Row="1" ItemsSource="{Binding SyndromeCollection}"
+            <DataGrid Grid.Row="1" ItemsSource="{Binding SyndromeCollection}" 
                       AutoGenerateColumns="False" IsReadOnly="True" MaxHeight="200" CanUserSortColumns="False" VerticalAlignment="Top">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding SOptional}" Header="S доп." Width="Auto" />
@@ -44,7 +36,7 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <TextBlock Text="Коррекция ошибок"/>
-            <DataGrid Grid.Row="1" ItemsSource="{Binding Corrections}"
+            <DataGrid Grid.Row="1" ItemsSource="{Binding Corrections}" Width="Auto" Height="Auto"
                       AutoGenerateColumns="False" IsReadOnly="True" MaxHeight="200" CanUserSortColumns="False" VerticalAlignment="Top">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding ErrorType}" Header="Тип ошибки" Width="Auto" />
