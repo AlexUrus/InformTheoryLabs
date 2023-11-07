@@ -1,11 +1,10 @@
-﻿using LR_1.ViewModels;
+﻿using LR_1.Tools;
+using LR_1.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
 
 namespace LR_1.Models
 {
@@ -174,12 +173,12 @@ namespace LR_1.Models
         {
             var gColumns = gmatrix.GetLength(1);
             var codeconstr = new byte[gColumns + 1];
-            for (var column = 0; column < gColumns; column++)//columns G (7)
+            for (var column = 0; column < gColumns; column++)
             {
                 var xor = bitblock.Select((t, bit) => t * gmatrix[bit, column]).Sum();
                 codeconstr[column + 1] = (byte)(xor % 2);
             }
-            //xor all bits
+
             var allxor = codeconstr.Aggregate(0, (current, b) => current ^ b);
             codeconstr[0] = (byte)allxor;
             return codeconstr;

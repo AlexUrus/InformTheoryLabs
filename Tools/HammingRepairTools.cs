@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LR_1.Models
+namespace LR_1.Tools
 {
     public class HammingRepairTools
     {
@@ -67,12 +67,6 @@ namespace LR_1.Models
             return result;
         }
 
-        /// <summary>
-        /// Получает восстановленные кодовые конструкции по расширенным синдромам
-        /// </summary>
-        /// <param name="constructions">список кодовых конструкций</param>
-        /// <param name="syndromes">список расширенных синдромов</param>
-        /// <returns></returns>
         public List<byte[]> GetRepairedConstructions(IList<byte[]> constructions, IList<byte[]> syndromes)
         {
             if (constructions.Count != syndromes.Count)
@@ -110,11 +104,6 @@ namespace LR_1.Models
             return repairedConstructions;
         }
 
-        /// <summary>
-        /// Проверяет код на ошибки по синдрому: true, если есть ошибки
-        /// </summary>
-        /// <param name="optionalSyndrome">S доп.+ синдром из 3 бит</param>
-        /// <returns>True - есть ошибки</returns>
         private bool CheckSyndromeForError(byte[] optionalSyndrome)
         {
             if (optionalSyndrome.All(b => b == 0))

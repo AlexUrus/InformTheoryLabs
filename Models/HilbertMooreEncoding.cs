@@ -1,5 +1,4 @@
-﻿using LR_1.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -7,7 +6,7 @@ using System.Printing;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LR_1
+namespace LR_1.Models
 {
     public class HilbertMooreEncoding
     {
@@ -26,7 +25,7 @@ namespace LR_1
         public void EncodingMessage()
         {
             CalcSymbolProbabilities();
-            foreach(var field in hilbertMooreFields)
+            foreach (var field in hilbertMooreFields)
             {
                 EncodeText += field.BinaryCode;
             }
@@ -61,7 +60,7 @@ namespace LR_1
                 double probability = (double)kvp.Value / Message.Length;
                 SymbolProbabilities.Add(kvp.Key, probability);
 
-                double sigmaM = q + (probability / 2);
+                double sigmaM = q + probability / 2;
                 string sigmaMBinary = DecimalToBinary(sigmaM);
                 int lengthDigits = (int)Math.Ceiling(-Math.Log2(probability / 2));
                 string binaryCode = BinaryCode(sigmaMBinary, lengthDigits);
@@ -124,7 +123,7 @@ namespace LR_1
         private static List<char> ProcessMessage(string message)
         {
             List<char> uniqueSortedChars = message
-                .OrderBy(c => c == ' ' ? 0 : 1) 
+                .OrderBy(c => c == ' ' ? 0 : 1)
                 .ThenBy(c => c)
                 .ToList();
 
@@ -145,7 +144,7 @@ namespace LR_1
                 avgLength += probability * codeword.Length;
             }
 
-            double redundancy = 1 - (entropy / avgLength);
+            double redundancy = 1 - entropy / avgLength;
             return redundancy;
         }
 

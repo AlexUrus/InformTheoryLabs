@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LR_1
+namespace LR_1.Tools
 {
     public class KraftInequality
     {
