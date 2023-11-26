@@ -16,26 +16,14 @@ namespace LR_1.Models
         public int N { get;set;}
         public string GenPolynom { get; set; }
 
-        public BCHCodeModel(int t, int k, int n, string genPolynom)
+        public BCHCodeModel(int n, int k, int t, string genPolynom)
         {
             T = t; K = k; N = n; GenPolynom = genPolynom;
         }
 
         public string EncodeMessage(string infCodeBytes)
         {
-            string encodedBytes;
-            Polynom infCodeBytesPolynom = new Polynom(infCodeBytes);
-            Polynom genPolynom = new Polynom(GenPolynom);
-
-            string infCodeString = genPolynom;
-            StringBuilder s3 = new StringBuilder(Polynom.GetStringZerosByLength(infCodeString.Length));
-
-            s3[0] = '1';
-
-            encodedBytes = infCodeBytesPolynom * new Polynom(s3.ToString());
-            encodedBytes += Polynom.Mod(infCodeBytesPolynom, genPolynom);
-
-            return encodedBytes;
+            return CyclicCodingTools.Encode(infCodeBytes, GenPolynom);
         }
 
         public string TryDecodeMessage(string encodedBytes, out bool isCorrectDecoding)

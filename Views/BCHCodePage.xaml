@@ -3,18 +3,20 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:LR_1.Views"
+      xmlns:local="clr-namespace:LR_1.Views" xmlns:vm="clr-namespace:LR_1.ViewModels"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="BCHCodePage">
-
+    <Page.DataContext>
+        <vm:BCHCodeViewModel/>
+    </Page.DataContext>
     <Grid>
         <StackPanel>
             <TextBlock Text="Лабораторная работа 3 Цикличное кодирование " FontWeight="Bold" FontSize="18"/>
             <TextBlock Text="Порождающий полином" FontSize="14"/>
-            <TextBox x:Name="GenPolynomTextBox" Text="{Binding GenPolynom}" Height="30" VerticalAlignment="Top" FontSize="14"/>
+            <TextBox x:Name="GenPolynomTextBox" Height="30" VerticalAlignment="Top" FontSize="14" IsEnabled="False"/>
             <TextBlock Text="Сообщение (последовательность 0 и 1):" FontSize="14"/>
-            <TextBox x:Name="MessageBytesTextBox" Text="{Binding MessageBytes}" Height="30" VerticalAlignment="Top" FontSize="14"/>
+            <TextBox x:Name="MessageBytesTextBox" Text="{Binding MessageInfBytes}" Height="30" VerticalAlignment="Top" FontSize="14"/>
             <Button x:Name="EncodeButton" Content="Закодировать" Command="{Binding EncodeCommand}" Height="30" VerticalAlignment="Top" FontSize="14" />
             <TextBlock Text="Закодированное сообщение" FontSize="14"/>
             <TextBox x:Name="EncodedMessageTextBox"  Text="{Binding EncodedMessage}" Height="30" VerticalAlignment="Top" FontSize="14"/>
