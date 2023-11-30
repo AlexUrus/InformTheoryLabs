@@ -102,7 +102,6 @@ namespace LR_1.Tools
 
         static string BinaryDivision(string dividend, string divisor)
         {
-            // Проверка на пустые строки или деление на ноль
             if (string.IsNullOrEmpty(dividend) || string.IsNullOrEmpty(divisor) || divisor == "0")
             {
                 return "Ошибка: некорректные входные данные";
@@ -114,7 +113,6 @@ namespace LR_1.Tools
 
             string divisorShifted = LeftShift(divisor, dividend.Length - divisor.Length);
 
-            // Инициализация остатка
             string remainder = dividend;
 
             while (CompareBinaryStrings(remainder, divisor))
@@ -127,7 +125,6 @@ namespace LR_1.Tools
                 divisorShifted = LeftShift(divisor, shift);
             }
 
-            // Если остаток пуст, то делимое было меньше делителя
             if (string.IsNullOrEmpty(remainder))
             {
                 return "0";
@@ -146,7 +143,6 @@ namespace LR_1.Tools
 
         static string XORBytes(string byteString1, string byteString2)
         {
-            // Проверка на пустые строки или разные длины
             if (string.IsNullOrEmpty(byteString1) || string.IsNullOrEmpty(byteString2)) 
             {
                 return "Ошибка: некорректные входные данные";
@@ -157,7 +153,6 @@ namespace LR_1.Tools
                 byteString2 = '0' + byteString2;
             }
 
-            // Выполнение XOR для каждого символа
             char[] resultChars = new char[byteString1.Length];
 
             for (int i = 0; i < byteString1.Length; i++)
@@ -165,7 +160,6 @@ namespace LR_1.Tools
                 resultChars[i] = (byteString1[i] == byteString2[i]) ? '0' : '1';
             }
 
-            // Преобразование результата в строку
             return new string(resultChars);
         }
     }
