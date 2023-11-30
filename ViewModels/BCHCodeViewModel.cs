@@ -46,14 +46,14 @@ namespace LR_1.ViewModels
 
         public BCHCodeViewModel()
         {
-            _model = new BCHCodeModel(7, 4,1 ,"1011");
+            _model = new BCHCodeModel(31, 16, 15, "1000111110101111");
             EncodeCommand = ReactiveCommand.Create(EncodingText);
             DecodeCommand = ReactiveCommand.Create(DecodingText);
         }
 
         public void EncodingText()
         {
-            if(MessageInfBytes != "")
+            if (MessageInfBytes != "")
             {
                 EncodedMessage = _model.EncodeMessage(MessageInfBytes);
             }
@@ -61,7 +61,10 @@ namespace LR_1.ViewModels
 
         public void DecodingText()
         {
-
+            if (EncodedMessage != "")
+            {
+                DecodedMessage = _model.TryDecodeMessage(EncodedMessage);
+            }
         }
     }
 }

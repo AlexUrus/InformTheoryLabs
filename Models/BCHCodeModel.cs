@@ -11,14 +11,31 @@ namespace LR_1.Models
 {
     public class BCHCodeModel
     {
-        public int T { get;set;}
+        public int R { get;set;}
         public int K { get;set;}
         public int N { get;set;}
         public string GenPolynom { get; set; }
 
-        public BCHCodeModel(int n, int k, int t, string genPolynom)
+        private int t;
+        private int d0;
+
+        public BCHCodeModel(int n, int k, int r, string genPolynom)
         {
-            T = t; K = k; N = n; GenPolynom = genPolynom;
+            R = r; K = k; N = n; GenPolynom = genPolynom;
+            d0 = genPolynom.Count(c => c == '1');
+            t = GetQuotient(d0);
+        }
+
+        private int GetQuotient(int n)
+        {
+            int i = 0;
+            while (true)
+            {
+                n /= 2;
+                i++;
+                if (n == 1) break;
+            }
+            return i;
         }
 
         public string EncodeMessage(string infCodeBytes)
@@ -26,69 +43,9 @@ namespace LR_1.Models
             return CyclicCodingTools.Encode(infCodeBytes, GenPolynom);
         }
 
-        public string TryDecodeMessage(string encodedBytes, out bool isCorrectDecoding)
+        public string TryDecodeMessage(string encodedBytes)
         {
-            Polynom p1 = new Polynom(encodedBytes);
-            Polynom p2 = new Polynom(GenPolynom);
-            Polynom remainder = Polynom.Mod(p1, p2);
-            if (remainder == "")
-                isCorrectDecoding = true;
-            else
-                isCorrectDecoding = false;
-
-            return p1.PolynomString.Substring(0, K);
-        }
-
-        public string RepairBytes(string badDecodedMessage)
-        {
-            Polynom p1 = new Polynom(badDecodedMessage);
-            int n1 = p1.PolynomString.Length;
-            Polynom p2 = new Polynom(GenPolynom);
-
-            int shifts = 0;
-
-            while (true)
-            {
-                Polynom polyRemainder = Polynom.Mod(p1, p2); 
-                string remainder = polyRemainder;
-
-                if (OnesCount(remainder) > T)
-                {
-                    string s = p1.PolynomString;
-                    s = s.Substring(1) + s[0];
-                    shifts++;
-                }
-                else
-                {
-                    p1 = p1 + polyRemainder;
-                    break;
-                }
-            }
-
-            for (int i = 0; i < shifts; i++)
-            {
-                string s = p1;
-                if (s.Length < n1)
-                {
-                    while (s.Length < n1)
-                    {
-                        s = '0' + s;
-                    }
-                }
-                s = s[s.Length - 1] + s.Substring(0, s.Length - 1);
-                p1 = new Polynom(s);
-            }
-            return p1.PolynomString.Substring(0, K);
-        }
-
-        int OnesCount(string s)
-        {
-            int sum = 0;
-            foreach (char c in s)
-            {
-                if (c == '1') sum++;
-            }
-            return sum;
+            return CyclicCodingTools.Decode(encodedBytes, GenPolynom,t);
         }
     }
 }
