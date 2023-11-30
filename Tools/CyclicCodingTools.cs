@@ -117,8 +117,6 @@ namespace LR_1.Tools
             // Инициализация остатка
             string remainder = dividend;
 
-
-            // Пока остаток больше или равен делителю
             while (CompareBinaryStrings(remainder, divisor))
             {
                 remainder = XORBytes(remainder, divisorShifted);
@@ -142,7 +140,7 @@ namespace LR_1.Tools
         {
             int decimal1 = Convert.ToInt32(binary1, 2);
             int decimal2 = Convert.ToInt32(binary2, 2);
-            return decimal1 > decimal2;
+            return decimal1 >= decimal2;
         }
 
 
