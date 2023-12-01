@@ -39,6 +39,10 @@ namespace LR_1.ViewModels
             {
                 return _model.GenPolynom;
             }
+            set
+            {
+                _model.GenPolynom = value;
+            }
         }
 
         public ReactiveCommand<Unit, Unit> EncodeCommand { get; }

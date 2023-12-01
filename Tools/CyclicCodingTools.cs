@@ -45,12 +45,12 @@ namespace LR_1.Tools
                 countCyclics++;
             }
 
-            return RemoveErrors(encodedMessage, w, countCyclics);
+            return RemoveErrors(encodedMessage, Rx, countCyclics);
         }
 
-        static string RemoveErrors(string badMessage, int w, int countCyclics)
+        static string RemoveErrors(string badMessage, string remainder, int countCyclics)
         {
-            badMessage = XORBytes(badMessage, Convert.ToString(w,2));
+            badMessage = XORBytes(badMessage, remainder);
             return CyclicRightShift(badMessage, countCyclics);
         }
 

@@ -14,7 +14,7 @@
         <StackPanel>
             <TextBlock Text="Лабораторная работа 3 Цикличное кодирование " FontWeight="Bold" FontSize="18"/>
             <TextBlock Text="Порождающий полином" FontSize="14"/>
-            <TextBox x:Name="GenPolynomTextBox" Text="{Binding GenPolynom, Mode=OneWay}" Height="30" VerticalAlignment="Top" FontSize="14" IsEnabled="False"/>
+            <TextBox x:Name="GenPolynomTextBox" Text="{Binding GenPolynom}" Height="30" VerticalAlignment="Top" FontSize="14" IsReadOnly="True"/>
             <TextBlock Text="Сообщение (последовательность 0 и 1):" FontSize="14"/>
             <TextBox x:Name="MessageBytesTextBox" Text="{Binding MessageInfBytes}" Height="30" VerticalAlignment="Top" FontSize="14"/>
             <Button x:Name="EncodeButton" Content="Закодировать" Command="{Binding EncodeCommand}" Height="30" VerticalAlignment="Top" FontSize="14" />
