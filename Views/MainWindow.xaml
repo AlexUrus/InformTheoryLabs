@@ -18,6 +18,7 @@
             <MenuItem Header="ЛР-1" Height="23" Command="{Binding NavigateToCommand}" CommandParameter="AplhabeticCodingPage"/>
             <MenuItem Header="ЛР-2" Height="23" Command="{Binding NavigateToCommand}" CommandParameter="HammingCodePage"/>
             <MenuItem Header="ЛР-3" Height="23" Command="{Binding NavigateToCommand}" CommandParameter="BCHCodePage"/>
+            <MenuItem Header="ЛР-4" Height="23" Command="{Binding NavigateToCommand}" CommandParameter="NoiseCodePage"/>
         </Menu>
         <Frame 
             x:Name="MainFrame" 
