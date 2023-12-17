@@ -162,46 +162,7 @@ namespace LR_1.Tools
 
         private bool IsFirstSymbEqually(string firstMessage, char symbol)
         {
-            if (firstMessage[0] == symbol)
-            {
-                return true;
-            }
-            else return false;
-        }
-
-        private void CalcCountMutualInfo()
-        {
-            CountMutualInfo = XUnconditionalEntropy + YUnconditionalEntropy - MutuaLEntropy;
-        }
-
-        private void CalcMatrixUncondEntropy()
-        {
-            MatrixUncondEntropy = new Dictionary<string, double>();
-
-            double element;
-            foreach (KeyValuePair<string, double> bigram in BigramProbabilities)
-            {
-                foreach (KeyValuePair<char, double> onegram in SymbolProbabilities)
-                {
-                    if (IsFirstSymbEqually(bigram.Key, onegram.Key))
-                    {
-                        element = onegram.Value * bigram.Value;
-                        MatrixUncondEntropy.Add(bigram.Key, element);
-                    }
-                }
-            }
-        }
-
-
-        private void CalcXUncondEntropy()
-        {
-            /* XUnconditionalEntropy = 0.0;
-
-             for (int i = 0; i < ; i++)
-             {
-
-             }
-             XUnconditionalEntropy -= */
+            return firstMessage[0] == symbol;
         }
     }
 }
