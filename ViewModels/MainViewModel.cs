@@ -21,6 +21,7 @@ namespace LR_1.ViewModels
         private Page AlphabeticCodingPage;
         private Page HammingCodePage;
         private Page BCHCodePage;
+        private Page CodeNoisePage;
         #endregion
 
         #region Properties
@@ -41,6 +42,7 @@ namespace LR_1.ViewModels
             AlphabeticCodingPage = new AlphabeticCodingPage();
             HammingCodePage = new HammingCodePage();
             BCHCodePage = new BCHCodePage();
+            CodeNoisePage = new CodeNoisePage();
 
             CurrentPage = AlphabeticCodingPage;
             NavigateToCommand = ReactiveCommand.CreateFromObservable<string, Unit>(NavigateTo);
@@ -58,6 +60,9 @@ namespace LR_1.ViewModels
                     break;
                 case "BCHCodePage":
                     CurrentPage = BCHCodePage;
+                    break;
+                case "NoiseCodePage":
+                    CurrentPage = CodeNoisePage;
                     break;
                 default:
                     break;

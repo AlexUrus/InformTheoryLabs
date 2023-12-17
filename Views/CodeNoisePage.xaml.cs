@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LR_1.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,13 +17,14 @@ using System.Windows.Shapes;
 namespace LR_1.Views
 {
     /// <summary>
-    /// Логика взаимодействия для NoiseCodePage.xaml
+    /// Логика взаимодействия для CodeNoisePage.xaml
     /// </summary>
-    public partial class NoiseCodePage : Page
+    public partial class CodeNoisePage : Page
     {
-        public NoiseCodePage()
+        public CodeNoisePage()
         {
             InitializeComponent();
+            DataContext = new NoiseCodeViewModel();
         }
     }
 }

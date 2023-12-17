@@ -1,5 +1,7 @@
-﻿using System;
+﻿using LR_1.Models;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,8 +13,7 @@ namespace LR_1.Tools
         #region Коллекции 
         public Dictionary<string, double> BigramProbabilities { get; private set; }
         public Dictionary<char, double> SymbolProbabilities { get; private set; }
-
-        public Dictionary<string, double> MatrixUncondEntropy { get; private set; }
+        public List<CountSelfInfField> CountSelfInfList { get; private set; }
         #endregion
 
         #region Выходные значения
@@ -21,11 +22,7 @@ namespace LR_1.Tools
         public double EntropyFirstStage { get; private set; }
         public double MaxEntropy { get; private set; }
         public double UnderLoadAlphabet { get; private set; }
-
-        public double XUnconditionalEntropy { get; private set; }
-        public double YUnconditionalEntropy { get; private set; }
-        public double MutuaLEntropy { get; private set; }
-        public double CountMutualInfo { get; private set; }
+        
         #endregion
         public string Message { get; set; }
 
@@ -35,23 +32,20 @@ namespace LR_1.Tools
             BigramProbabilities = new Dictionary<string, double>();
         }
 
-        public async void CalcAllFields()
+        public void CalcAllFields()
         {
-            await Task.Run(() =>
+            if (Message != null)
             {
-                if (Message != null)
-                {
-                    CalcBigramProbabilities();
-                    CalcSymbolProbabilities();
+                CalcBigramProbabilities();
+                CalcSymbolProbabilities();
 
-                    CalcAnsambl();
-                    CalcEntropy();
-                    CalcMaxEntropy();
-                    CalcUnderLoadAlphabet();
-                    CalcEntropyFirstStage();
-                }
-            });
-
+                CalcAnsambl();
+                CalcEntropy();
+                CalcMaxEntropy();
+                CalcUnderLoadAlphabet();
+                CalcEntropyFirstStage();
+                CalcSelfInf();
+            }
         }
         private void CalcBigramProbabilities()
         {
@@ -83,16 +77,13 @@ namespace LR_1.Tools
             Ansambl = SymbolProbabilities.Count;
         }
 
-        private async void CalcEntropy()
+        private void CalcEntropy()
         {
-            await Task.Run(() =>
+            Entropy = 0;
+            foreach (double p in SymbolProbabilities.Values)
             {
-                Entropy = 0;
-                foreach (double p in SymbolProbabilities.Values)
-                {
-                    Entropy -= p * Math.Log(p, 2);
-                }
-            });
+                Entropy -= p * Math.Log(p, 2);
+            }
         }
 
         private void CalcMaxEntropy()
@@ -105,24 +96,36 @@ namespace LR_1.Tools
             UnderLoadAlphabet = MaxEntropy - Entropy;
         }
 
-        private async void CalcEntropyFirstStage()
+        private void CalcEntropyFirstStage()
         {
-            await Task.Run(() =>
+            EntropyFirstStage = 0.0;
+            double firstSum;
+            foreach (KeyValuePair<string, double> bigram in BigramProbabilities)
             {
-                EntropyFirstStage = 0.0;
-                double firstSum;
-                foreach (KeyValuePair<string, double> bigram in BigramProbabilities)
+                foreach (KeyValuePair<char, double> onegram in SymbolProbabilities)
                 {
-                    foreach (KeyValuePair<char, double> onegram in SymbolProbabilities)
+                    if (IsFirstSymbEqually(bigram.Key, onegram.Key))
                     {
-                        if (IsFirstSymbEqually(bigram.Key, onegram.Key))
-                        {
-                            firstSum = bigram.Value * Math.Log2(bigram.Value);
-                            EntropyFirstStage -= onegram.Value * firstSum;
-                        }
+                        firstSum = bigram.Value * Math.Log2(bigram.Value);
+                        EntropyFirstStage -= onegram.Value * firstSum;
                     }
                 }
-            });
+            }
+        }
+
+        private void CalcSelfInf()
+        {
+            CountSelfInfList = new();
+            foreach(KeyValuePair<char, double> onegram in SymbolProbabilities)
+            {
+                double countSelfInf = -Math.Log2(onegram.Value);
+                var countSelfInfField = new CountSelfInfField()
+                {
+                    Symbol = onegram.Key,
+                    CountSelfInf = countSelfInf
+                };
+                CountSelfInfList.Add(countSelfInfField);
+            }
         }
 
         private Dictionary<char, int> OneSymbCountContains()
