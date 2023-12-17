@@ -9,7 +9,7 @@
       Title="NoiseCodePage">
 
     <Grid>
-        <TextBox x:Name="Message" HorizontalAlignment="Left" Margin="50,87,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="Message_TextChanged"/>
+        <TextBox x:Name="Message" HorizontalAlignment="Left" Margin="50,87,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
         <Label x:Name="LabelMessage" Content="Сообщение" HorizontalAlignment="Left" Margin="50,56,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="Ansambl" HorizontalAlignment="Left" Margin="50,132,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" IsReadOnly="True"/>
         <DataGrid x:Name="OneSymbolGrid" ItemsSource="{Binding}" AutoGenerateColumns="False" Margin="247,0,0,0" IsReadOnly="True" HorizontalAlignment="Left" Width="225" >
@@ -33,6 +33,5 @@
         <Label x:Name="LabelUnderload" Content="Недогруженность алфавита" HorizontalAlignment="Left" Margin="51,250,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="EntropyFirstStage" HorizontalAlignment="Left" Margin="49,319,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" IsReadOnly="True"/>
         <Label x:Name="LabelEntropyFirstStage" Content="Энтропия 1-го порядка" HorizontalAlignment="Left" Margin="50,296,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="SwitchTask" Content="Взаимная информация" HorizontalAlignment="Left" Margin="51,20,0,0" VerticalAlignment="Top" Click="SwitchTask_Click"/>
     </Grid>
 </Page>
