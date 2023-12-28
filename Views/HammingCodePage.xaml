@@ -13,31 +13,36 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="14*"/>
-            <ColumnDefinition Width="14*"/>
+            <ColumnDefinition Width="20*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="20*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="28*"/>
-            <RowDefinition Height="223*"/>
-            <RowDefinition Height="319*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="20*"/>
+
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Лабораторная работа 2 Код Хэмминга, матричный способ кодирования" FontWeight="Bold" FontSize="18" Grid.Row="0" Grid.ColumnSpan="2"/>
+        <TextBlock Text="Курсовая работа" FontWeight="Bold" FontSize="18" Grid.Row="0" Grid.ColumnSpan="2"/>
         <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="1">
 
             <TextBlock Text="Сообщение" FontSize="14"/>
             <TextBox x:Name="MessageText"  Text="{Binding MessageText}" Height="30" VerticalAlignment="Top" FontSize="14"/>
-            <Button x:Name="EncodeMessageBtn" Command="{Binding EncodeTextCommand}" Height="30" Content="Кодировать"/>
-            <TextBlock Text="Закодированное сообщение" FontSize="14"/>
+            <Button x:Name="EncodeMessageBtn" Command="{Binding EncodeTextCommand}" Height="30" FontSize="14" Content="Кодировать"/>
+            <TextBlock Text="Закодированное сообщение" Height="30" FontSize="14"/>
             <TextBox x:Name="EncodeText"  Text="{Binding EncodeText}" Height="30" VerticalAlignment="Top" FontSize="14"/>
-            <Button x:Name="SendEncodedText"  Height="30" Content="Отправить на приемник" Click="SendEncodedText_Click" />
-            <!-- <Button x:Name="DecodeMessageBtn" Command="{Binding DecodeTextCommand}" Height="30" Content="Декодировать"/> -->
-            
-           <!-- <TextBlock Text="Декодированное сообщение" FontSize="14"/> -->
-           <!-- <TextBox x:Name="DecodedText"  Text="{Binding DecodeText}" Height="30" VerticalAlignment="Top" FontSize="14" /> -->
-
+            <Button x:Name="EncodeTextHamming" Command="{Binding EncodeHammingTextCommand}" Content="Зашифровать" Height="30" VerticalAlignment="Top" FontSize="14"/>
+            <Label Content="Зашифрованый код" FontSize="14"/>
+            <TextBox x:Name="HammingEncodeText"  Text="{Binding EncodeHammingText}" Height="90" VerticalAlignment="Top" FontSize="14" TextWrapping="Wrap"/>
+            <Button x:Name="SendEncodedText"  Height="30" Content="Отправить на приемник" Click="SendEncodedText_Click" FontSize="14"/>
+            <Label Content="Оптимальность" Height="30" FontSize="14"/>
+            <TextBox Text="{Binding IsOptimalCode, Mode=OneWay}" Height="30" FontSize="14"/>
+            <Label Content="Избыточность" Height="30" FontSize="14"/>
+            <TextBox Text="{Binding Redundancy, Mode=OneWay}" Height="30" FontSize="14"/>
+            <Label Content="Граница Плоткина" Height="30" FontSize="14"/>
+            <TextBox Text="{Binding Bound, Mode=OneWay}" Height="30" FontSize="14"/>
         </StackPanel>
-        <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="1">
+        <StackPanel Grid.Row="1" Grid.Column="2" >
             <WrapPanel>
                 <StackPanel Grid.Column="0" HorizontalAlignment="Left">
                     <TextBlock Text="G" FontSize="14" HorizontalAlignment="Center"/>
@@ -50,8 +55,9 @@
                 </StackPanel>
             </WrapPanel>
         </StackPanel>
+        <!--
         <Grid Grid.Row="2" Grid.ColumnSpan="2">
             <views:CorrectorView/>
-        </Grid>
+        </Grid> -->
     </Grid>
 </Page>

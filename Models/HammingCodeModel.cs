@@ -17,6 +17,7 @@ namespace LR_1.Models
         public ObservableCollection<SyndromeViewModel> SyndromeCollection;
         public ObservableCollection<CorrectionViewModel> Corrections;
         private HammingRepairTools _repairTools;
+        private List<byte[]>? _arrcorrections;
         public HammingCodeModel()
         {
             SyndromeCollection = new ObservableCollection<SyndromeViewModel>();
@@ -25,12 +26,8 @@ namespace LR_1.Models
 
         public byte[][] GetEncodedMas(string text)
         {
-            while(text.Length % 8 != 0)
-            {
-                text += 0;
-            }
 
-            string strBits = text; //ConvertToUnicode(text);
+            string strBits = ConvertToUnicode(text);
             string[] blocks = DivStrBy4bit(strBits);
             int blockLength = blocks[0].Length;
             var codematrix = new byte[blocks.Length][];
@@ -60,13 +57,17 @@ namespace LR_1.Models
             return codematrix;
         }
 
+        public double CalculatePlotkinBound(string code)
+        {
+            int n = MatrixManager.HammingCodesMatrixWithParity.GetLength(0);
+            int k = MatrixManager.HammingCodesMatrixWithParity.GetLength(1);
+            int z = 2;
+
+            return n * (Math.Pow(z, k - 1) / (Math.Pow(z, k) - 1));
+        }
+
         public string GetDecodedText(string encodedText)
         {
-            while(encodedText.Length % 4 != 0)
-            {
-                encodedText += 0;
-            }
-
             SyndromeCollection.Clear();
             Corrections.Clear();
 
@@ -79,13 +80,13 @@ namespace LR_1.Models
             {
                 SyndromeCollection.Add(new SyndromeViewModel(arr));
             }
-            var arrcorrections = _repairTools.GetRepairedConstructions(arrConstructions, slist);
-            for (var i = 0; i < arrcorrections.Count; i++)
+            _arrcorrections = _repairTools.GetRepairedConstructions(arrConstructions, slist);
+            for (var i = 0; i < _arrcorrections.Count; i++)
             {
-                Corrections.Add(new CorrectionViewModel(ConvertArrayToString(slist[i]), ConvertArrayToString(arrcorrections[i])));
+                Corrections.Add(new CorrectionViewModel(ConvertArrayToString(slist[i]), ConvertArrayToString(_arrcorrections[i])));
             }
 
-            return DecodeText(arrcorrections);
+            return DecodeText(_arrcorrections);
         }
 
         public string DecodeText(List<byte[]> arrcorrections)
@@ -106,7 +107,7 @@ namespace LR_1.Models
                     sb.Append(bit);
                 }
             }
-            return sb.ToString();   
+            return DecodeBinaryToUnicode(sb.ToString());   
 
         }
 
@@ -124,11 +125,6 @@ namespace LR_1.Models
             }
 
             return sb.ToString();
-        }
-
-        static string DecodeHamming(string binaryStr)
-        {
-            return "";
         }
 
         public string ConvertArrayToString(byte[] arr)

@@ -79,7 +79,7 @@ namespace LR_1.ViewModels
         {
             HilbertMooreEncoding mooreEncoding = new HilbertMooreEncoding(_messageText);
             mooreEncoding.EncodingMessage();
-            MooreFields = mooreEncoding.hilbertMooreFields;
+            MooreFields = HilbertMooreEncoding.HilbertMooreFields;
             EncodeText = mooreEncoding.EncodeText;
             Redundancy = mooreEncoding.Redundancy.ToString();
             CheckKraftInequality();

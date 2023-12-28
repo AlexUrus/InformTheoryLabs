@@ -44,7 +44,7 @@ namespace LR_1.ViewModels
             BCHCodePage = new BCHCodePage();
             CodeNoisePage = new CodeNoisePage();
 
-            CurrentPage = AlphabeticCodingPage;
+            CurrentPage = HammingCodePage;
             NavigateToCommand = ReactiveCommand.CreateFromObservable<string, Unit>(NavigateTo);
         }
 

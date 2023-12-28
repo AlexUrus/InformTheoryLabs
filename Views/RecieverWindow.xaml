@@ -5,18 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:LR_1.ViewModels"
         mc:Ignorable="d"
-        Title="RecieverWindow" Height="160" Width="355">
+        Title="RecieverWindow" Height="360" Width="355">
 
     <Grid>
         <StackPanel>
-            <Label Content="Полученное сообщение"/>
-            <TextBox x:Name="RecievedMessage" Text="{Binding RecievedMessage}"/>
-            <Label Content="Исправленное сообщение" />
-            <TextBox x:Name="RepairedInfBytes" Text="{Binding RepairedInfBytes}" />
-            <Button Command="{Binding RepaireInfBytesCommand}" Height="25" Content="Исправить" />
-            <Label Content="Декодированное сообщение" />
-            <TextBox x:Name="DecodedText" Text="{Binding DecodedText}" />
-            <Button Command="{Binding DecodeTextCommand}" Height="25" Content="Декодировать" />
+            <Label Content="Полученное сообщение" Height="30" FontSize="14"/>
+            <TextBox x:Name="RecievedMessage" Text="{Binding RecievedMessage}" TextWrapping="Wrap" Height="90" FontSize="14"/>
+            <Button Command="{Binding DecodeTextCommand}" Content="Декодировать"  Height="30" FontSize="14"/>
+            <Label Content="Декодированное сообщение" Height="30" FontSize="14" />
+            <TextBox x:Name="DecodedText" Text="{Binding DecodedText}" TextWrapping="Wrap" Height="90" FontSize="14"/>
         </StackPanel>
     </Grid>
 </Window>

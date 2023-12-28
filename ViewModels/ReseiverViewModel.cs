@@ -13,7 +13,6 @@ namespace LR_1.ViewModels
     public class ReseiverViewModel : BaseViewModel
     {
         private HammingCodeModel _hammingCodeModel;
-        private HilbertMooreEncoding _decodingModel;
         public string _recievedMessage;
         public string RecievedMessage
         {
@@ -27,15 +26,6 @@ namespace LR_1.ViewModels
             get => _decodedText;
             set => this.RaiseAndSetIfChanged(ref _decodedText, value);
         }
-
-        private string _repairedInfBytes;
-        public string RepairedInfBytes
-        {
-            get => _repairedInfBytes;
-            set => this.RaiseAndSetIfChanged(ref _repairedInfBytes, value);
-        }
-
-        public ReactiveCommand<Unit, Unit> RepaireInfBytesCommand { get; }
         public ReactiveCommand<Unit, Unit> DecodeTextCommand { get; }
 
         public ReseiverViewModel(string recievedMessage)
@@ -43,22 +33,12 @@ namespace LR_1.ViewModels
             _hammingCodeModel = new HammingCodeModel();
             RecievedMessage = recievedMessage;
             DecodeTextCommand = ReactiveCommand.Create(DecodingText);
-            RepaireInfBytesCommand = ReactiveCommand.Create(RepairInfBytes);
         }
 
         public void DecodingText()
         {
-            DecodedText = _decodingModel.
-        }
-
-        public void RepairInfBytes()
-        {
-            if (RecievedMessage != null && RecievedMessage != string.Empty)
-            {
-                var encodedBytes = _hammingCodeModel.GetEncodedMas(RecievedMessage);
-                var str = ConvertMasIntToStringBytes(encodedBytes);
-                RepairedInfBytes = _hammingCodeModel.GetDecodedText(str);
-            }
+            DecodedText = _hammingCodeModel.GetDecodedText(RecievedMessage);
+            DecodedText = HilbertMooreEncoding.DecodingMessage(DecodedText);
         }
 
         private string ConvertMasIntToStringBytes(byte[][] masBits)

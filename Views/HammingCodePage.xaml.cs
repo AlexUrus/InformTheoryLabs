@@ -29,7 +29,7 @@ namespace LR_1.Views
         private void SendEncodedText_Click(object sender, RoutedEventArgs e)
         {
             var receiverWindow = new RecieverWindow();
-            receiverWindow.DataContext = new ReseiverViewModel(EncodeText.Text);
+            receiverWindow.DataContext = new ReseiverViewModel(HammingEncodeText.Text);
             receiverWindow.Show();
         }
     }

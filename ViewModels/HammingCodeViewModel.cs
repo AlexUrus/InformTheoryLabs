@@ -35,6 +35,13 @@ namespace LR_1.ViewModels
             set => this.RaiseAndSetIfChanged(ref _decodeText, value);
         }
 
+        private string _encodeHammingText;
+        public string EncodeHammingText
+        {
+            get => _encodeHammingText;
+            set => this.RaiseAndSetIfChanged(ref _encodeHammingText, value);
+        }
+
         public string G_MatrixString
         {
             get 
@@ -48,6 +55,25 @@ namespace LR_1.ViewModels
             {
                 return ConvertMatrixtoString(_model.H_Matrix);
             }
+        }
+        private string _isOptimalCode;
+        public string IsOptimalCode
+        {
+            get => _isOptimalCode;
+            set => this.RaiseAndSetIfChanged(ref _isOptimalCode, value);
+        }
+        private double _redundancy;
+        public double Redundancy
+        {
+            get => _redundancy;
+            set => this.RaiseAndSetIfChanged(ref _redundancy, value);
+        }
+
+        private double _bound;
+        public double Bound
+        {
+            get => _bound;
+            set => this.RaiseAndSetIfChanged(ref _bound, value);
         }
 
         private ObservableCollection<SyndromeViewModel> _syndromeCollection;
@@ -66,6 +92,7 @@ namespace LR_1.ViewModels
 
         public ReactiveCommand<Unit,Unit> EncodeTextCommand { get; }
         public ReactiveCommand<Unit, Unit> DecodeTextCommand { get; }
+        public ReactiveCommand<Unit, Unit> EncodeHammingTextCommand { get; }
 
         private ObservableCollection<HilbertMooreField> _mooreFields;
         public ObservableCollection<HilbertMooreField> MooreFields
@@ -76,8 +103,9 @@ namespace LR_1.ViewModels
 
         public HammingCodeViewModel()
         {
+            EncodeHammingTextCommand = ReactiveCommand.Create(EncodingHammingText);
             EncodeTextCommand = ReactiveCommand.Create(EncodingText);
-            DecodeTextCommand = ReactiveCommand.Create(DecodingText );
+            DecodeTextCommand = ReactiveCommand.Create(DecodingText);
             _model = new HammingCodeModel();
             
         }
@@ -90,6 +118,8 @@ namespace LR_1.ViewModels
                 _encodingModel.EncodingMessage();
 
                 EncodeText = _encodingModel.EncodeText;
+                Redundancy  = _encodingModel.Redundancy;
+                IsOptimalCode = _encodingModel.IsOptimalCode ? "Оптимальный" : "Не оптимальный";
             }
         }
 
@@ -99,8 +129,17 @@ namespace LR_1.ViewModels
             {
                 DecodeText = _model.GetDecodedText(EncodeText); 
             }
-            //Corrections = _model.Corrections;
-            //SyndromeCollection = _model.SyndromeCollection;
+        }
+
+        public void EncodingHammingText()
+        {
+            if (EncodeText != null && EncodeText != string.Empty)
+            {
+                byte[][] encodedBits = _model.GetEncodedMas(EncodeText);
+
+                EncodeHammingText = ConvertMasIntToStringBytes(encodedBits);
+                Bound = _model.CalculatePlotkinBound(EncodeHammingText);
+            }
         }
 
         private string ConvertMatrixtoString(byte[,] matrix)

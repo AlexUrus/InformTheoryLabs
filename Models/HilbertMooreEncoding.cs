@@ -1,4 +1,6 @@
-﻿using System;
+﻿using LR_1.Tools;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -10,38 +12,59 @@ namespace LR_1.Models
 {
     public class HilbertMooreEncoding
     {
-        public ObservableCollection<HilbertMooreField> hilbertMooreFields;
+        public static ObservableCollection<HilbertMooreField> HilbertMooreFields = new ObservableCollection<HilbertMooreField>();
         string Message { get; set; }
         public string EncodeText { get; set; }
         public double Redundancy { get; set; }
-        private Dictionary<char, double> SymbolProbabilities;
+        public bool IsOptimalCode { get; set; }
 
+        private Dictionary<char, double> SymbolProbabilities;
 
         public HilbertMooreEncoding(string message)
         {
             Message = message;
-            hilbertMooreFields = new ObservableCollection<HilbertMooreField>();
+            HilbertMooreFields.Clear();
         }
         public void EncodingMessage()
         {
+            EncodeText = "";
             CalcSymbolProbabilities();
-            foreach (var field in hilbertMooreFields)
+            foreach (var field in HilbertMooreFields)
             {
                 EncodeText += field.BinaryCode;
             }
             Dictionary<char, string> codewords = MappingCodeWords();
             Redundancy = CalculateRedundancy(codewords);
+            IsOptimalCode = KraftInequality.IsOptimalCode(Message);
         }
 
-        public void DecodingMessage()
+        public static string DecodingMessage(string encodedMessage)
         {
-            
+            string[] encodedSymbols = encodedMessage.Chunk(HilbertMooreFields.Count).Select(x => new string(x)).ToArray();
+
+            StringBuilder decodedSB = new StringBuilder();
+
+            foreach (var encodedSymbol in encodedSymbols)
+            {
+                var field = HilbertMooreFields.FirstOrDefault(field => field.BinaryCode == encodedSymbol);
+
+                if (field != null)
+                {
+                    decodedSB.Append(field.Symbol);
+                }
+                else
+                {
+                    decodedSB.Append("*");
+                }
+            }
+           
+            return decodedSB.ToString();
         }
 
         private Dictionary<char, string> MappingCodeWords()
         {
             Dictionary<char, string> codewords = new Dictionary<char, string>();
-            foreach (var field in hilbertMooreFields)
+            foreach (var field in HilbertMooreFields)
             {
                 codewords[field.Symbol] = field.BinaryCode;
             }
@@ -64,7 +87,7 @@ namespace LR_1.Models
                 int lengthDigits = (int)Math.Ceiling(-Math.Log2(probability / 2));
                 string binaryCode = BinaryCode(sigmaMBinary, lengthDigits);
 
-                hilbertMooreFields.Add(new HilbertMooreField()
+                HilbertMooreFields.Add(new HilbertMooreField()
                 {
                     Probability = probability,
                     Symbol = kvp.Key,
