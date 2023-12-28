@@ -32,17 +32,23 @@ namespace LR_1.Models
             Dictionary<char, string> codewords = MappingCodeWords();
             Redundancy = CalculateRedundancy(codewords);
         }
-
-        private Dictionary<char, string> MappingCodeWords()
+        private Dictionary<char, int> OneSymbCountContains()
         {
-            Dictionary<char, string> codewords = new Dictionary<char, string>();
-            foreach (var field in hilbertMooreFields)
+            Dictionary<char, int> symbolCounts = new Dictionary<char, int>();
+            List<char> symbols = ProcessMessage(Message);
+            foreach (char symbol in symbols)
             {
-                codewords[field.Symbol] = field.BinaryCode;
+                if (symbolCounts.ContainsKey(symbol))
+                {
+                    symbolCounts[symbol]++;
+                }
+                else
+                {
+                    symbolCounts[symbol] = 1;
+                }
             }
-            return codewords;
+            return symbolCounts;
         }
-
         public void CalcSymbolProbabilities()
         {
             double q = 0.0;
@@ -73,25 +79,6 @@ namespace LR_1.Models
 
             }
         }
-
-        private Dictionary<char, int> OneSymbCountContains()
-        {
-            Dictionary<char, int> symbolCounts = new Dictionary<char, int>();
-            List<char> symbols = ProcessMessage(Message);
-            foreach (char symbol in symbols)
-            {
-                if (symbolCounts.ContainsKey(symbol))
-                {
-                    symbolCounts[symbol]++;
-                }
-                else
-                {
-                    symbolCounts[symbol] = 1;
-                }
-            }
-            return symbolCounts;
-        }
-
         private string BinaryCode(string sigmaMBinary, int lengthDigits)
         {
             if (sigmaMBinary.Length >= 2)
@@ -104,7 +91,6 @@ namespace LR_1.Models
             }
             return string.Empty;
         }
-
         public static string DecimalToBinary(double number)
         {
             int integralPart = (int)number;
@@ -161,5 +147,16 @@ namespace LR_1.Models
             double redundancy = 1 - entropy / avgLength;
             return redundancy;
         }
+
+        private Dictionary<char, string> MappingCodeWords()
+        {
+            Dictionary<char, string> codewords = new Dictionary<char, string>();
+            foreach (var field in hilbertMooreFields)
+            {
+                codewords[field.Symbol] = field.BinaryCode;
+            }
+            return codewords;
+        }
+
     }
 }
