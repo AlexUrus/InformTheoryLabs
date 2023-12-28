@@ -1,0 +1,22 @@
+﻿<Window x:Class="LR_1.Views.RecieverWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:LR_1.ViewModels"
+        mc:Ignorable="d"
+        Title="RecieverWindow" Height="160" Width="355">
+
+    <Grid>
+        <StackPanel>
+            <Label Content="Полученное сообщение"/>
+            <TextBox x:Name="RecievedMessage" Text="{Binding RecievedMessage}"/>
+            <Label Content="Исправленное сообщение" />
+            <TextBox x:Name="RepairedInfBytes" Text="{Binding RepairedInfBytes}" />
+            <Button Command="{Binding RepaireInfBytesCommand}" Height="25" Content="Исправить" />
+            <Label Content="Декодированное сообщение" />
+            <TextBox x:Name="DecodedText" Text="{Binding DecodedText}" />
+            <Button Command="{Binding DecodeTextCommand}" Height="25" Content="Декодировать" />
+        </StackPanel>
+    </Grid>
+</Window>

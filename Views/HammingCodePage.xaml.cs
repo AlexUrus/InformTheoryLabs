@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LR_1.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,13 @@ namespace LR_1.Views
         public HammingCodePage()
         {
             InitializeComponent();
+        }
+
+        private void SendEncodedText_Click(object sender, RoutedEventArgs e)
+        {
+            var receiverWindow = new RecieverWindow();
+            receiverWindow.DataContext = new ReseiverViewModel(EncodeText.Text);
+            receiverWindow.Show();
         }
     }
 }

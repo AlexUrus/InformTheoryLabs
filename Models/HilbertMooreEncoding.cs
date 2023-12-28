@@ -33,6 +33,11 @@ namespace LR_1.Models
             Redundancy = CalculateRedundancy(codewords);
         }
 
+        public void DecodingMessage()
+        {
+            
+        }
+
         private Dictionary<char, string> MappingCodeWords()
         {
             Dictionary<char, string> codewords = new Dictionary<char, string>();
@@ -104,6 +109,7 @@ namespace LR_1.Models
             }
             return string.Empty;
         }
+
 
         public static string DecimalToBinary(double number)
         {

@@ -8,7 +8,7 @@
       xmlns:views="clr-namespace:LR_1.Views"
       Title="HammingCodePage" Height="570">
     <Page.DataContext>
-        <vm:NoiseCodeViewModel/>
+        <vm:HammingCodeViewModel/>
     </Page.DataContext>
 
     <Grid>
@@ -30,9 +30,11 @@
             <Button x:Name="EncodeMessageBtn" Command="{Binding EncodeTextCommand}" Height="30" Content="Кодировать"/>
             <TextBlock Text="Закодированное сообщение" FontSize="14"/>
             <TextBox x:Name="EncodeText"  Text="{Binding EncodeText}" Height="30" VerticalAlignment="Top" FontSize="14"/>
-            <Button x:Name="DecodeMessageBtn" Command="{Binding DecodeTextCommand}" Height="30" Content="Декодировать"/>
-            <TextBlock Text="Декодированное сообщение" FontSize="14"/>
-            <TextBox x:Name="DecodedText"  Text="{Binding DecodeText}" Height="30" VerticalAlignment="Top" FontSize="14" />
+            <Button x:Name="SendEncodedText"  Height="30" Content="Отправить на приемник" Click="SendEncodedText_Click" />
+            <!-- <Button x:Name="DecodeMessageBtn" Command="{Binding DecodeTextCommand}" Height="30" Content="Декодировать"/> -->
+            
+           <!-- <TextBlock Text="Декодированное сообщение" FontSize="14"/> -->
+           <!-- <TextBox x:Name="DecodedText"  Text="{Binding DecodeText}" Height="30" VerticalAlignment="Top" FontSize="14" /> -->
 
         </StackPanel>
         <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="1">

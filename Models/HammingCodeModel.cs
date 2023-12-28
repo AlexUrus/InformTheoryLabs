@@ -25,7 +25,12 @@ namespace LR_1.Models
 
         public byte[][] GetEncodedMas(string text)
         {
-            string strBits = ConvertToUnicode(text);
+            while(text.Length % 8 != 0)
+            {
+                text += 0;
+            }
+
+            string strBits = text; //ConvertToUnicode(text);
             string[] blocks = DivStrBy4bit(strBits);
             int blockLength = blocks[0].Length;
             var codematrix = new byte[blocks.Length][];
@@ -57,6 +62,11 @@ namespace LR_1.Models
 
         public string GetDecodedText(string encodedText)
         {
+            while(encodedText.Length % 4 != 0)
+            {
+                encodedText += 0;
+            }
+
             SyndromeCollection.Clear();
             Corrections.Clear();
 
@@ -96,7 +106,7 @@ namespace LR_1.Models
                     sb.Append(bit);
                 }
             }
-            return DecodeBinaryToUnicode(sb.ToString());   
+            return sb.ToString();   
 
         }
 
@@ -116,7 +126,12 @@ namespace LR_1.Models
             return sb.ToString();
         }
 
-        private string ConvertArrayToString(byte[] arr)
+        static string DecodeHamming(string binaryStr)
+        {
+            return "";
+        }
+
+        public string ConvertArrayToString(byte[] arr)
         {
             var sb = new StringBuilder();
             foreach (var item in arr)

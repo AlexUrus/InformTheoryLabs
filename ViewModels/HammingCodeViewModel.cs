@@ -13,6 +13,7 @@ namespace LR_1.ViewModels
     public class HammingCodeViewModel : BaseViewModel
     {
         private HammingCodeModel _model;
+        private HilbertMooreEncoding _encodingModel;
 
         private string _encodeText;
         public string EncodeText
@@ -78,14 +79,17 @@ namespace LR_1.ViewModels
             EncodeTextCommand = ReactiveCommand.Create(EncodingText);
             DecodeTextCommand = ReactiveCommand.Create(DecodingText );
             _model = new HammingCodeModel();
+            
         }
 
         public void EncodingText()
         {
             if(MessageText != null && MessageText != string.Empty) 
             {
-                byte[][] encodedBits = _model.GetEncodedMas(MessageText);
-                EncodeText = ConvertMasIntToStringBytes(encodedBits);
+                _encodingModel = new HilbertMooreEncoding(MessageText);
+                _encodingModel.EncodingMessage();
+
+                EncodeText = _encodingModel.EncodeText;
             }
         }
 
@@ -95,8 +99,8 @@ namespace LR_1.ViewModels
             {
                 DecodeText = _model.GetDecodedText(EncodeText); 
             }
-            Corrections = _model.Corrections;
-            SyndromeCollection = _model.SyndromeCollection;
+            //Corrections = _model.Corrections;
+            //SyndromeCollection = _model.SyndromeCollection;
         }
 
         private string ConvertMatrixtoString(byte[,] matrix)
