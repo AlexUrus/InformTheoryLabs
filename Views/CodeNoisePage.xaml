@@ -10,6 +10,11 @@
 
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="44*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="41*"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition Width="16*"/>
@@ -17,24 +22,50 @@
             <ColumnDefinition Width="16*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="1" >
+        <StackPanel Grid.Column="1" Grid.RowSpan="3" >
             <Label x:Name="LabelMessage" Content="Сообщение"/>
             <TextBox x:Name="Message" TextWrapping="Wrap" Text="{Binding Message}"/>
             <Label x:Name="LabelEntropyFirstStage" Content="Энтропия 1-го порядка" />
             <TextBox x:Name="EntropyFirstStage" IsReadOnly="True" Text="{Binding EntropyFirstStage, Mode=OneWay}"/>
             <Label x:Name="LabelAnsambl" Content="Ансамбль" />
-            <TextBox x:Name="Ansambl" TextWrapping="Wrap" IsReadOnly="True"/>
-            <Label x:Name="LabelEntropy" Content="Энтропия" />
-            <TextBox x:Name="EntropyValue" TextWrapping="Wrap" IsReadOnly="True"/>
+            <TextBox x:Name="Ansambl" TextWrapping="Wrap" IsReadOnly="True" Text="{Binding Ansambl}"/>
+            <Label x:Name="LabelEntropy" Content="Средняя взаимная информация" />
+            <TextBox x:Name="EntropyValue" TextWrapping="Wrap" IsReadOnly="True" Text="{Binding AverageMutualInf}"/>
             <Label x:Name="LabelMaxEntropy" Content="Максимальная Энтропия" />
             <TextBox x:Name="MaxEntropy" IsReadOnly="True" Text="{Binding MaxEntropy, Mode=OneWay}"/>
-            <Label x:Name="LabelUnderload" Content="Недогруженность алфавита"/>
-            <TextBox x:Name="UnderLoadAlphabet" TextWrapping="Wrap" IsReadOnly="True"/>
 
             <Button x:Name="CalcAllFields" Content="Вычислить" Command="{Binding CalcAllFieldsCommand}"/>
         </StackPanel>
-        <StackPanel Grid.Column="3" >
-            <DataGrid ItemsSource="{Binding CountSelfInfList}"/>
-        </StackPanel>
+        <DataGrid ItemsSource="{Binding CountSelfInfList}" Grid.Column="3" Grid.Row="0" />
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="3" Grid.Row="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="7*"/>
+                    <RowDefinition Height="34*"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Grid.Column="0">
+                    <Label Content="Левая граница"/>
+                    <TextBox Name="leftBorder" Text="0" />
+                </StackPanel>
+                <StackPanel Grid.Row="0" Grid.Column="1">
+                    <Label Content="Правая граница"/>
+                    <TextBox Name="rightBorder" Text="1"/>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
+                    <Label Content="Размерность"/>
+                    <ComboBox x:Name="cbSize" SelectionChanged="CbSize_SelectionChanged" HorizontalAlignment="Left" Height="18" Width="50"/>
+                    <Label Content="Матрица"/>
+                    <DataGrid x:Name="dgMatrix" AutoGenerateColumns="False" CanUserAddRows="False" HorizontalAlignment="Left" LoadingRow="dgMatrix_LoadingRow" 
+                          LostFocus="dgMatrix_LostFocus" KeyUp="dgMatrix_KeyUp"
+                          />
+                    <Label Content="Значение суммы" Margin="5,15,0,0"/>
+                    <TextBox x:Name="tbResult" Text="Сумма элементов" IsReadOnly="True"/>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
     </Grid>
 </Page>
