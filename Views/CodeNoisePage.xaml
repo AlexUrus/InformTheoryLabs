@@ -25,8 +25,6 @@
         <StackPanel Grid.Column="1" Grid.RowSpan="3" >
             <Label x:Name="LabelMessage" Content="Сообщение"/>
             <TextBox x:Name="Message" TextWrapping="Wrap" Text="{Binding Message}"/>
-            <Label x:Name="LabelEntropyFirstStage" Content="Энтропия 1-го порядка" />
-            <TextBox x:Name="EntropyFirstStage" IsReadOnly="True" Text="{Binding EntropyFirstStage, Mode=OneWay}"/>
             <Label x:Name="LabelAnsambl" Content="Ансамбль" />
             <TextBox x:Name="Ansambl" TextWrapping="Wrap" IsReadOnly="True" Text="{Binding Ansambl}"/>
             <Label x:Name="LabelEntropy" Content="Средняя взаимная информация" />
